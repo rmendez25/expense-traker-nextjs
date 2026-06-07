@@ -26,6 +26,7 @@ export interface ITransaction {
   description: string;
   isRecurring: boolean;
   recurringInterval?: 'monthly' | 'yearly';
+  nextDate?: string;
   user: string;
 }
 

@@ -8,6 +8,7 @@ export interface ITransactionDocument extends Document {
   description: string;
   isRecurring: boolean;
   recurringInterval?: 'monthly' | 'yearly';
+  nextDate?: Date;
   user: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
@@ -48,6 +49,9 @@ const transactionSchema = new Schema<ITransactionDocument>(
       type: String,
       enum: ['monthly', 'yearly'],
     },
+    nextDate: {
+      type: Date,
+    },
     user: {
       type: Schema.Types.ObjectId,
       ref: 'User',
@@ -60,5 +64,6 @@ const transactionSchema = new Schema<ITransactionDocument>(
 transactionSchema.index({ user: 1, date: -1 });
 transactionSchema.index({ user: 1, category: 1 });
 transactionSchema.index({ user: 1, type: 1, date: -1 });
+transactionSchema.index({ user: 1, isRecurring: 1, nextDate: 1 });
 
 export default mongoose.models.Transaction || mongoose.model<ITransactionDocument>('Transaction', transactionSchema);

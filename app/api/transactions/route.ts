@@ -3,6 +3,7 @@ import connectDB from '@/lib/db';
 import Transaction from '@/lib/models/Transaction';
 import { getTokenFromRequest, verifyToken, unauthorizedResponse } from '@/lib/auth';
 import { handleApiError } from '@/lib/api-error';
+import { computeNextDate } from '@/lib/recurring';
 
 const toLocalDate = (dateStr: string): Date => {
   const [y, m, d] = dateStr.split('-').map(Number);
@@ -86,14 +87,17 @@ export async function POST(request: NextRequest) {
     const { amount, date, type, category, description, isRecurring, recurringInterval } =
       await request.json();
 
+    const transactionDate = date ? toLocalDate(date) : new Date();
+
     const transaction = await Transaction.create({
       amount,
-      date: date ? toLocalDate(date) : new Date(),
+      date: transactionDate,
       type,
       category,
       description,
       isRecurring: isRecurring || false,
-      recurringInterval,
+      recurringInterval: isRecurring ? recurringInterval : undefined,
+      nextDate: isRecurring ? computeNextDate(transactionDate, recurringInterval) : undefined,
       user: decoded.userId,
     });
 

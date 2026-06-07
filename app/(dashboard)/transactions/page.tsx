@@ -33,6 +33,8 @@ export default function TransactionsPage() {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<ITransaction | null>(null);
   const [sortField, setSortField] = useState<SortField>('date');
+  const [recurringCreated, setRecurringCreated] = useState(0);
+  const [processingRecurring, setProcessingRecurring] = useState(false);
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
   const [filters, setFilters] = useState<Filters>({
     type: '', category: '', startDate: '', endDate: '', search: '',
@@ -72,6 +74,21 @@ export default function TransactionsPage() {
     }
   }, [page, filters, sortField, sortOrder]);
 
+  const processRecurring = useCallback(async () => {
+    setProcessingRecurring(true);
+    try {
+      const res = await api.post('/transactions/recurring/process');
+      const count = res.data.created;
+      if (count > 0) {
+        setRecurringCreated((prev) => prev + count);
+        fetchTransactions();
+      }
+    } catch {
+    } finally {
+      setProcessingRecurring(false);
+    }
+  }, [fetchTransactions]);
+
   useEffect(() => {
     api.get('/categories').then((res) => setCategories(res.data));
   }, []);
@@ -79,6 +96,10 @@ export default function TransactionsPage() {
   useEffect(() => {
     fetchTransactions();
   }, [fetchTransactions]);
+
+  useEffect(() => {
+    processRecurring();
+  }, [processRecurring]);
 
   const handleFilterChange = (newFilters: Filters) => {
     setFilters(newFilters);
@@ -110,13 +131,34 @@ export default function TransactionsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900">Transactions</h1>
-        <button
-          onClick={() => { setEditing(null); setShowForm(true); }}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700"
-        >
-          + Add Transaction
-        </button>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={processRecurring}
+            disabled={processingRecurring}
+            className="border border-slate-200 text-slate-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-slate-50 transition-colors disabled:opacity-50 flex items-center gap-2"
+          >
+            <svg className={`w-4 h-4 ${processingRecurring ? 'animate-spin' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            Process Recurring
+          </button>
+          <button
+            onClick={() => { setEditing(null); setShowForm(true); }}
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700"
+          >
+            + Add Transaction
+          </button>
+        </div>
       </div>
+
+      {recurringCreated > 0 && (
+        <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 text-sm px-4 py-3 rounded-xl flex items-center gap-2">
+          <svg className="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          {recurringCreated} recurring transaction{recurringCreated > 1 ? 's' : ''} auto-generated
+        </div>
+      )}
 
       <TransactionFilters
         filters={filters}
