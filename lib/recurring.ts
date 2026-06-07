@@ -1,5 +1,6 @@
 import connectDB from '@/lib/db';
 import Transaction from '@/lib/models/Transaction';
+import Category from '@/lib/models/Category';
 
 function addInterval(date: Date, interval: 'monthly' | 'yearly'): Date {
   const d = new Date(date);

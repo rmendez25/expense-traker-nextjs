@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/db';
 import Transaction from '@/lib/models/Transaction';
+import Category from '@/lib/models/Category';
 import { getTokenFromRequest, verifyToken, unauthorizedResponse } from '@/lib/auth';
 import { handleApiError } from '@/lib/api-error';
 
