@@ -28,8 +28,6 @@ export default function TransactionForm({ transaction, onClose, onSaved }: Props
     type: transaction?.type || 'expense',
     category: getCategoryId(transaction?.category),
     description: transaction?.description || '',
-    isRecurring: transaction?.isRecurring || false,
-    recurringInterval: transaction?.recurringInterval || 'monthly',
   });
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
@@ -64,8 +62,6 @@ export default function TransactionForm({ transaction, onClose, onSaved }: Props
         type: form.type,
         category: form.category,
         description: form.description,
-        isRecurring: form.isRecurring,
-        recurringInterval: form.isRecurring ? form.recurringInterval : undefined,
       };
 
       if (transaction?._id) {
@@ -185,35 +181,6 @@ export default function TransactionForm({ transaction, onClose, onSaved }: Props
               placeholder="Optional description"
             />
           </div>
-
-          <label className="flex items-center gap-3 cursor-pointer group">
-            <div className="relative">
-              <input
-                type="checkbox"
-                checked={form.isRecurring}
-                onChange={(e) => setForm((prev) => ({ ...prev, isRecurring: e.target.checked }))}
-                className="sr-only"
-              />
-              <div className={`w-10 h-6 rounded-full transition-colors ${form.isRecurring ? 'bg-blue-600' : 'bg-slate-200'}`}>
-                <div className={`w-4 h-4 bg-white rounded-full shadow-sm transition-transform mt-1 ${form.isRecurring ? 'translate-x-5' : 'translate-x-1'}`} />
-              </div>
-            </div>
-            <span className="text-sm text-slate-700 group-hover:text-slate-900">Recurring transaction</span>
-          </label>
-
-          {form.isRecurring && (
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Interval</label>
-              <select
-                value={form.recurringInterval}
-                onChange={(e) => setForm((prev) => ({ ...prev, recurringInterval: e.target.value as 'monthly' | 'yearly' }))}
-                className="w-full px-4 py-2.5 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all text-sm bg-white"
-              >
-                <option value="monthly">Monthly</option>
-                <option value="yearly">Yearly</option>
-              </select>
-            </div>
-          )}
 
           <div className="flex gap-3 pt-2">
             <button

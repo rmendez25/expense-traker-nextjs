@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 const navItems = [
@@ -55,11 +55,13 @@ export default function DashboardLayout({
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  if (loading) return <LoadingSpinner />;
-  if (!user) {
-    router.replace('/login');
-    return <LoadingSpinner />;
-  }
+  useEffect(() => {
+    if (!loading && !user) {
+      router.replace('/login');
+    }
+  }, [user, loading, router]);
+
+  if (loading || !user) return <LoadingSpinner />;
 
   return (
     <div className="min-h-screen bg-gray-50 flex">

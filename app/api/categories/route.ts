@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
     const decoded = verifyToken(token);
     if (!decoded) return unauthorizedResponse();
 
-    const { name, type, isRecurring, color, icon } = await request.json();
+    const { name, type, color, icon } = await request.json();
 
     const existing = await Category.findOne({ name, user: decoded.userId });
     if (existing) {
@@ -42,7 +42,6 @@ export async function POST(request: NextRequest) {
     const category = await Category.create({
       name,
       type,
-      isRecurring: isRecurring || false,
       isDefault: false,
       color,
       icon,

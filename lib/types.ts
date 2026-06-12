@@ -10,7 +10,6 @@ export interface ICategory {
   _id: string;
   name: string;
   type: 'income' | 'expense';
-  isRecurring: boolean;
   isDefault: boolean;
   color: string;
   icon?: string;
@@ -24,9 +23,6 @@ export interface ITransaction {
   type: 'income' | 'expense';
   category: ICategory | string;
   description: string;
-  isRecurring: boolean;
-  recurringInterval?: 'monthly' | 'yearly';
-  nextDate?: string;
   user: string;
 }
 
