@@ -4,7 +4,6 @@ import Transaction from '@/lib/models/Transaction';
 import Category from '@/lib/models/Category';
 import { getTokenFromRequest, verifyToken, unauthorizedResponse } from '@/lib/auth';
 import { handleApiError } from '@/lib/api-error';
-import { computeNextDate } from '@/lib/recurring';
 
 const toLocalDate = (dateStr: string): Date => {
   const [y, m, d] = dateStr.split('-').map(Number);
@@ -57,7 +56,7 @@ export async function GET(request: NextRequest) {
 
     const [transactions, total] = await Promise.all([
       Transaction.find(filter)
-        .populate('category', 'name color type isRecurring')
+        .populate('category', 'name color type')
         .sort({ [field]: order })
         .skip((pageNum - 1) * limitNum)
         .limit(limitNum),
@@ -85,8 +84,7 @@ export async function POST(request: NextRequest) {
     const decoded = verifyToken(token);
     if (!decoded) return unauthorizedResponse();
 
-    const { amount, date, type, category, description, isRecurring, recurringInterval } =
-      await request.json();
+    const { amount, date, type, category, description } = await request.json();
 
     const transactionDate = date ? toLocalDate(date) : new Date();
 
@@ -96,13 +94,10 @@ export async function POST(request: NextRequest) {
       type,
       category,
       description,
-      isRecurring: isRecurring || false,
-      recurringInterval: isRecurring ? recurringInterval : undefined,
-      nextDate: isRecurring ? computeNextDate(transactionDate, recurringInterval) : undefined,
       user: decoded.userId,
     });
 
-    const populated = await transaction.populate('category', 'name color type isRecurring');
+    const populated = await transaction.populate('category', 'name color type');
     return NextResponse.json(populated, { status: 201 });
   } catch (error) {
     return handleApiError(error);

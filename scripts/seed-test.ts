@@ -8,25 +8,25 @@ import Category from '../lib/models/Category';
 import Transaction from '../lib/models/Transaction';
 
 const defaultCategories = [
-  { name: 'Salary', type: 'income' as const, isRecurring: true, color: '#22C55E', icon: 'briefcase' },
-  { name: 'Local Investments', type: 'income' as const, isRecurring: false, color: '#3B82F6', icon: 'trending-up' },
-  { name: 'Freelance', type: 'income' as const, isRecurring: false, color: '#8B5CF6', icon: 'code' },
-  { name: 'Utilities', type: 'expense' as const, isRecurring: true, color: '#F59E0B', icon: 'zap' },
-  { name: 'Subscriptions', type: 'expense' as const, isRecurring: true, color: '#6366F1', icon: 'repeat' },
-  { name: 'Family Expenses', type: 'expense' as const, isRecurring: true, color: '#EC4899', icon: 'users' },
-  { name: 'Home Construction', type: 'expense' as const, isRecurring: false, color: '#F97316', icon: 'home' },
-  { name: 'Rent', type: 'expense' as const, isRecurring: true, color: '#EF4444', icon: 'home' },
-  { name: 'Insurance', type: 'expense' as const, isRecurring: true, color: '#14B8A6', icon: 'shield' },
-  { name: 'Groceries', type: 'expense' as const, isRecurring: false, color: '#84CC16', icon: 'shopping-cart' },
-  { name: 'Fuel', type: 'expense' as const, isRecurring: false, color: '#EAB308', icon: 'fuel' },
-  { name: 'Dining Out', type: 'expense' as const, isRecurring: false, color: '#A855F7', icon: 'utensils' },
-  { name: 'Healthcare', type: 'expense' as const, isRecurring: false, color: '#06B6D4', icon: 'heart' },
-  { name: 'Entertainment', type: 'expense' as const, isRecurring: false, color: '#D946EF', icon: 'film' },
-  { name: 'Education', type: 'expense' as const, isRecurring: false, color: '#2563EB', icon: 'book' },
-  { name: 'Savings', type: 'expense' as const, isRecurring: true, color: '#10B981', icon: 'piggy-bank' },
-  { name: 'Shopping', type: 'expense' as const, isRecurring: false, color: '#F43F5E', icon: 'shopping-bag' },
-  { name: 'Transportation', type: 'expense' as const, isRecurring: false, color: '#7C3AED', icon: 'bus' },
-  { name: 'Miscellaneous', type: 'expense' as const, isRecurring: false, color: '#78716C', icon: 'more-horizontal' },
+  { name: 'Salary', type: 'income' as const, color: '#22C55E', icon: 'briefcase' },
+  { name: 'Local Investments', type: 'income' as const, color: '#3B82F6', icon: 'trending-up' },
+  { name: 'Freelance', type: 'income' as const, color: '#8B5CF6', icon: 'code' },
+  { name: 'Utilities', type: 'expense' as const, color: '#F59E0B', icon: 'zap' },
+  { name: 'Subscriptions', type: 'expense' as const, color: '#6366F1', icon: 'repeat' },
+  { name: 'Family Expenses', type: 'expense' as const, color: '#EC4899', icon: 'users' },
+  { name: 'Home Construction', type: 'expense' as const, color: '#F97316', icon: 'home' },
+  { name: 'Rent', type: 'expense' as const, color: '#EF4444', icon: 'home' },
+  { name: 'Insurance', type: 'expense' as const, color: '#14B8A6', icon: 'shield' },
+  { name: 'Groceries', type: 'expense' as const, color: '#84CC16', icon: 'shopping-cart' },
+  { name: 'Fuel', type: 'expense' as const, color: '#EAB308', icon: 'fuel' },
+  { name: 'Dining Out', type: 'expense' as const, color: '#A855F7', icon: 'utensils' },
+  { name: 'Healthcare', type: 'expense' as const, color: '#06B6D4', icon: 'heart' },
+  { name: 'Entertainment', type: 'expense' as const, color: '#D946EF', icon: 'film' },
+  { name: 'Education', type: 'expense' as const, color: '#2563EB', icon: 'book' },
+  { name: 'Savings', type: 'expense' as const, color: '#10B981', icon: 'piggy-bank' },
+  { name: 'Shopping', type: 'expense' as const, color: '#F43F5E', icon: 'shopping-bag' },
+  { name: 'Transportation', type: 'expense' as const, color: '#7C3AED', icon: 'bus' },
+  { name: 'Miscellaneous', type: 'expense' as const, color: '#78716C', icon: 'more-horizontal' },
 ];
 
 function randomFloat(min: number, max: number, decimals = 2): number {
@@ -134,8 +134,6 @@ async function seed() {
         type: 'income',
         category: cat._id,
         description: pick(incomeDescriptions),
-        isRecurring: cat.isRecurring,
-        recurringInterval: cat.isRecurring ? 'monthly' : undefined,
         user: user._id,
       });
     }
@@ -151,8 +149,6 @@ async function seed() {
         type: 'expense',
         category: cat._id,
         description: pick(descList),
-        isRecurring: cat.isRecurring,
-        recurringInterval: cat.isRecurring ? 'monthly' : undefined,
         user: user._id,
       });
     }

@@ -8,7 +8,6 @@ interface Category {
   _id: string;
   name: string;
   type: 'income' | 'expense';
-  isRecurring: boolean;
   isDefault: boolean;
   color: string;
 }
@@ -17,7 +16,7 @@ export default function CategoriesPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState({ name: '', type: 'expense' as 'income' | 'expense', isRecurring: false, color: '#3B82F6' });
+  const [form, setForm] = useState({ name: '', type: 'expense' as 'income' | 'expense', color: '#3B82F6' });
   const [error, setError] = useState('');
 
   const fetchCategories = async () => {
@@ -39,7 +38,7 @@ export default function CategoriesPage() {
     try {
       await api.post('/categories', form);
       setShowForm(false);
-      setForm({ name: '', type: 'expense', isRecurring: false, color: '#3B82F6' });
+      setForm({ name: '', type: 'expense', color: '#3B82F6' });
       fetchCategories();
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to create category');
@@ -93,7 +92,6 @@ export default function CategoriesPage() {
                 <div className="flex items-center gap-3">
                   <span className="w-2.5 h-2.5 rounded-full shadow-sm" style={{ backgroundColor: cat.color }} />
                   <span className="font-medium text-slate-700 text-sm">{cat.name}</span>
-                  {cat.isRecurring && <span className="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-md font-medium">Recurring</span>}
                   {cat.isDefault && <span className="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded-md font-medium">Default</span>}
                 </div>
                 {!cat.isDefault && (
@@ -122,7 +120,6 @@ export default function CategoriesPage() {
                 <div className="flex items-center gap-3">
                   <span className="w-2.5 h-2.5 rounded-full shadow-sm" style={{ backgroundColor: cat.color }} />
                   <span className="font-medium text-slate-700 text-sm">{cat.name}</span>
-                  {cat.isRecurring && <span className="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-md font-medium">Recurring</span>}
                   {cat.isDefault && <span className="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded-md font-medium">Default</span>}
                 </div>
                 {!cat.isDefault && (
@@ -197,21 +194,6 @@ export default function CategoriesPage() {
                   <span className="text-sm text-slate-500">{form.color}</span>
                 </div>
               </div>
-
-              <label className="flex items-center gap-3 cursor-pointer group">
-                <div className="relative">
-                  <input
-                    type="checkbox"
-                    checked={form.isRecurring}
-                    onChange={(e) => setForm((p) => ({ ...p, isRecurring: e.target.checked }))}
-                    className="sr-only"
-                  />
-                  <div className={`w-10 h-6 rounded-full transition-colors ${form.isRecurring ? 'bg-blue-600' : 'bg-slate-200'}`}>
-                    <div className={`w-4 h-4 bg-white rounded-full shadow-sm transition-transform mt-1 ${form.isRecurring ? 'translate-x-5' : 'translate-x-1'}`} />
-                  </div>
-                </div>
-                <span className="text-sm text-slate-700">Recurring category</span>
-              </label>
 
               <div className="flex gap-3 pt-2">
                 <button type="button" onClick={() => setShowForm(false)} className="flex-1 py-2.5 border border-slate-200 rounded-xl text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors">Cancel</button>

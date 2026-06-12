@@ -27,7 +27,7 @@ export async function GET(
     const transaction = await Transaction.findOne({
       _id: id,
       user: decoded.userId,
-    }).populate('category', 'name color type isRecurring');
+    }).populate('category', 'name color type');
 
     if (!transaction) {
       return NextResponse.json({ message: 'Transaction not found' }, { status: 404 });
@@ -59,7 +59,7 @@ export async function PUT(
       { _id: id, user: decoded.userId },
       updateData,
       { new: true, runValidators: true }
-    ).populate('category', 'name color type isRecurring');
+    ).populate('category', 'name color type');
 
     if (!transaction) {
       return NextResponse.json({ message: 'Transaction not found' }, { status: 404 });

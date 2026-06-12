@@ -3,7 +3,6 @@ import mongoose, { Document, Schema } from 'mongoose';
 export interface ICategoryDocument extends Document {
   name: string;
   type: 'income' | 'expense';
-  isRecurring: boolean;
   isDefault: boolean;
   color: string;
   icon?: string;
@@ -23,10 +22,6 @@ const categorySchema = new Schema<ICategoryDocument>(
       type: String,
       enum: ['income', 'expense'],
       required: [true, 'Category type is required'],
-    },
-    isRecurring: {
-      type: Boolean,
-      default: false,
     },
     isDefault: {
       type: Boolean,
